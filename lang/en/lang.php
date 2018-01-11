@@ -189,7 +189,9 @@ return [
         'featured_description' => 'Choose which Posts to show',
         'list_all' => 'All',
         'list_featured' => 'Only Featured',
-        'list_notfeatured' => 'Not featured'
+        'list_notfeatured' => 'Not featured',
+        'category_fillter' => 'Category Fillter',
+        'category_fillter_description' => 'Enter a category slug or URL parameter to fillter posts by. Leave empty to show all post'
     ],
     'sorting' => [
         'title_asc' => 'Title (ascending)',

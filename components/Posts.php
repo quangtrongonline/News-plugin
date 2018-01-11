@@ -4,6 +4,7 @@ use Cms\Classes\ComponentBase;
 use Cms\Classes\Page;
 use Lang;
 use Quangtrong\News\Models\Posts as NewsPost;
+use Quangtrong\News\Models\Categories as BlogCategory;
 use Redirect;
 
 class Posts extends ComponentBase
@@ -15,6 +16,8 @@ class Posts extends ComponentBase
     public $postPage;
 
     public $sortOrder;
+
+    public $category;
 
     public function componentDetails()
     {
@@ -46,6 +49,12 @@ class Posts extends ComponentBase
                 'type'              => 'string',
                 'default'           => Lang::get('quangtrong.news::lang.settings.no_posts_found'),
                 'showExternalParam' => false
+            ],
+            'categoryFilter' => [
+                'title'       => 'quangtrong.news::lang.settings.category_fillter',
+                'description' => 'quangtrong.news::lang.settings.category_fillter_description',
+                'type'        => 'string',
+                'default'     => ''
             ],
             'sortOrder' => [
                 'title'       => 'quangtrong.news::lang.settings.posts_order_title',
@@ -93,6 +102,7 @@ class Posts extends ComponentBase
         $this->page['postPage'] = $this->property('postPage');
         $this->page['noPostsMessage'] = $this->property('noPostsMessage');
 
+        $this->category = $this->page['category'] = $this->loadCategory();
         $this->posts = $this->page['posts'] = $this->listPosts();
 
         if ($pageNumberParam = $this->paramName('pageNumber')) {
@@ -106,14 +116,32 @@ class Posts extends ComponentBase
 
     protected function listPosts()
     {
+        $category = $this->category ? $this->category->id : null;
         $posts = NewsPost::listFrontEnd([
             'page'     => $this->property('pageNumber'),
             'sort'     => $this->property('sortOrder'),
             'perPage'  => $this->property('postsPerPage'),
             'featured' => $this->property('postFeatured'),
+            'category'   => $category,
             'search'   => trim(input('search'))
         ]);
 
         return $posts;
+    }
+
+    protected function loadCategory()
+    {
+        if (!$slug = $this->property('categoryFilter')) {
+            return null;
+        }
+
+        $category = new BlogCategory;
+
+        $category = $category->isClassExtendedWith('RainLab.Translate.Behaviors.TranslatableModel')
+            ? $category->transWhere('slug', $slug)
+            : $category->where('slug', $slug);
+
+        $category = $category->first();
+        return $category ?: null;
     }
 }

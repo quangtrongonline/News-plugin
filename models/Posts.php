@@ -126,6 +126,8 @@ class Posts extends Model
             'perPage'  => 10,
             'sort'     => 'created_at',
             'search'   => '',
+            'categories'   => null,
+            'category'   => null,
             'status'   => 1,
             'featured' => 0
         ], $options));
@@ -169,7 +171,39 @@ class Posts extends Model
             $query->searchWhere($search, $searchableFields);
         }
 
+       /*
+         * Categories
+         */
+        if ($categories !== null) {
+            if (!is_array($categories)) $categories = [$categories];
+            $query->whereHas('category', function($q) use ($categories) {
+                $q->whereIn('id', $categories);
+            });
+        }
+        /*
+         * Category, including children
+         */
+        if ($category !== null) {
+            $category = Categories::find($category);
+            $categories = $category->getAllChildrenAndSelf()->lists('id');
+            $query->whereHas('category', function($q) use ($categories) {
+                $q->whereIn('id', $categories);
+            });
+        }
         return $query->paginate($perPage, $page);
+    }
+
+    /**
+     * Allows filtering for specifc categories
+     * @param  Illuminate\Query\Builder  $query      QueryBuilder
+     * @param  array                     $categories List of category ids
+     * @return Illuminate\Query\Builder              QueryBuilder
+     */
+    public function scopeFilterCategories($query, $categories)
+    {
+        return $query->whereHas('categories', function($q) use ($categories) {
+            $q->whereIn('id', $categories);
+        });
     }
 
     public function scopeIsPublished($query)
