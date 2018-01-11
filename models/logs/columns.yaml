@@ -1,0 +1,55 @@
+# ===================================
+#  Column Definitions
+# ===================================
+
+columns:
+
+    id:
+        label: quangtrong.news::lang.form.id
+
+    news:
+        label: quangtrong.news::lang.form.news
+        searchable: true
+        relation: news
+        select: title
+
+    subscriber_name:
+        label: quangtrong.news::lang.form.subscriber_name
+        searchable: true
+        relation: subscriber
+        select: name
+
+    subscriber_email:
+        label: quangtrong.news::lang.form.subscriber_email
+        searchable: true
+        relation: subscriber
+        select: email
+
+    queued_at:
+        label: quangtrong.news::lang.form.queued_at
+        invisible: true
+        searchable: true
+        type: timesince
+
+    send_at:
+        label: quangtrong.news::lang.form.send_at
+        searchable: true
+        type: timesince
+
+    viewed_at:
+        label: quangtrong.news::lang.form.viewed_at
+        invisible: true
+        searchable: true
+        type: timesince
+
+    clicked_at:
+        label: quangtrong.news::lang.form.clicked_at
+        invisible: true
+        searchable: true
+        type: timesince
+
+    status:
+        label: quangtrong.news::lang.form.status
+        searchable: true
+        type: partial
+        path: ~/plugins/quangtrong/news/models/logs/_status.htm

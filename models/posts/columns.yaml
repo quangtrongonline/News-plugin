@@ -1,0 +1,69 @@
+# ===================================
+#  Column Definitions
+# ===================================
+
+columns:
+
+    id:
+        label: quangtrong.news::lang.form.id
+        invisible: true
+
+    image:
+        label: quangtrong.news::lang.form.image
+        sortable: false
+        invisible: true
+        type: partial
+        path: ~/plugins/quangtrong/news/models/posts/_image.htm
+
+    title:
+        label: quangtrong.news::lang.form.title
+        searchable: true
+
+    slug:
+        label: quangtrong.news::lang.form.slug
+        searchable: true
+        invisible: true
+
+    statistics:
+        label: quangtrong.news::lang.stat.viewed
+
+    length:
+        label: quangtrong.news::lang.form.length
+        sortable: false
+        type: partial
+        path: ~/plugins/quangtrong/news/models/posts/_length.htm
+
+    featured:
+        label: quangtrong.news::lang.form.featured
+        searchable: true
+        invisible: true
+        type: partial
+        path: ~/plugins/quangtrong/news/models/posts/_featured.htm
+
+    status:
+        label: quangtrong.news::lang.form.status
+        searchable: true
+        type: partial
+        path: ~/plugins/quangtrong/news/models/posts/_status.htm
+
+    last_send_at:
+        label: quangtrong.news::lang.form.last_send
+        searchable: true
+        type: timesince
+
+    published_at:
+        label: quangtrong.news::lang.form.published
+        searchable: true
+        type: datetime
+
+    created_at:
+        label: quangtrong.news::lang.form.created
+        searchable: true
+        invisible: true
+        type: datetime
+
+    updated_at:
+        label: quangtrong.news::lang.form.updated
+        searchable: true
+        invisible: true
+        type: datetime

@@ -1,0 +1,25 @@
+# ===================================
+#  List Behavior Config
+# ===================================
+
+title: quangtrong.news::lang.menu.categories
+list: ~/plugins/quangtrong/news/models/categories/columns.yaml
+
+modelClass: Quangtrong\News\Models\Categories
+recordUrl: quangtrong/news/categories/update/:id
+noRecordsMessage: backend::lang.list.no_records
+
+recordsPerPage: 15
+showCheckboxes: true
+showSetup: true
+showTree: true
+defaultSort:
+    column: name
+    direction: asc
+
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: backend::lang.list.search_prompt
+
+filter: config_filter.yaml

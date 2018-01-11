@@ -1,0 +1,52 @@
+# ===================================
+#  Column Definitions
+# ===================================
+
+columns:
+
+    id:
+        label: quangtrong.news::lang.form.id
+        invisible: true
+
+    name:
+        label: quangtrong.news::lang.form.name
+        searchable: true
+
+    email:
+        label: quangtrong.news::lang.form.email
+        searchable: true
+
+    common:
+        label: quangtrong.news::lang.form.common
+        searchable: true
+        invisible: true
+
+    locale:
+        label: quangtrong.news::lang.form.locale
+        searchable: true
+        invisible: true
+        type: partial
+        path: ~/plugins/quangtrong/news/models/subscribers/_locale.htm
+
+    statistics:
+        label: quangtrong.news::lang.stat.mail
+        searchable: true
+        type: partial
+        path: ~/plugins/quangtrong/news/models/subscribers/_statistics.htm
+
+    status:
+        label: quangtrong.news::lang.form.status
+        searchable: true
+        type: partial
+        path: ~/plugins/quangtrong/news/models/subscribers/_status.htm
+
+    created_at:
+        label: quangtrong.news::lang.form.created
+        searchable: true
+        type: datetime
+
+    updated_at:
+        label: quangtrong.news::lang.form.updated
+        searchable: true
+        invisible: true
+        type: datetime

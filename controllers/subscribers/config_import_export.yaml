@@ -1,0 +1,18 @@
+# ===================================
+#  Import/Export Behavior Config
+# ===================================
+
+import:
+    title: quangtrong.news::lang.menu.import
+    modelClass: Quangtrong\News\Models\SubscribersImport
+    list: $/quangtrong/news/models/subscribersimport/columns.yaml
+    redirect: quangtrong/news/subscribers
+    permissions: quangtrong.news.import_export
+
+export:
+    title: quangtrong.news::lang.menu.export
+    modelClass: Quangtrong\News\Models\SubscribersExport
+    list: $/quangtrong/news/models/subscribersexport/columns.yaml
+    redirect: quangtrong/news/subscribers
+    permissions: quangtrong.news.import_export
+    filename: subscribers.csv

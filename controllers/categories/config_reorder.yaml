@@ -1,0 +1,12 @@
+# ===================================
+#  Reorder Behavior Config
+# ===================================
+
+title: quangtrong.news::lang.button.reorder
+
+nameFrom: name
+
+modelClass: Quangtrong\News\Models\Categories
+
+toolbar:
+    buttons: reorder_toolbar

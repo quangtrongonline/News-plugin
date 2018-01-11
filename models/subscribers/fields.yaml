@@ -1,0 +1,41 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+
+    locale:
+        label: quangtrong.news::lang.form.locale
+        placeholder: quangtrong.news::lang.form.lang
+        span: right
+
+    name:
+        label: quangtrong.news::lang.form.name
+        span: left
+
+    email:
+        label: quangtrong.news::lang.form.email
+        required: true
+        span: left
+
+    categories:
+        label: quangtrong.news::lang.menu.categories
+        type: relation
+        comment: quangtrong.news::lang.form.categories_comment
+        span: right
+
+    common:
+        label: quangtrong.news::lang.form.comment
+        type: textarea
+        size: small
+        span: left
+
+    status:
+        label: quangtrong.news::lang.form.status
+        required: true
+        type: balloon-selector
+        options:
+            1: quangtrong.news::lang.form.status_active
+            2: quangtrong.news::lang.form.status_unsubscribed
+        default: 1
+        span: right

@@ -1,0 +1,10 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><?= e(trans('quangtrong.news::lang.menu.logs')) ?></li>
+        <li>
+            <span class="text-info"><strong><?= Quangtrong\News\Models\Logs::count() ?></strong> <?= e(trans('quangtrong.news::lang.form.logs_count')) ?></span>
+        </li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?= $this->listRender() ?>

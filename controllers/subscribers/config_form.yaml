@@ -1,0 +1,17 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+name: quangtrong.news::lang.title.subscribers
+form: ~/plugins/quangtrong/news/models/subscribers/fields.yaml
+
+modelClass: Quangtrong\News\Models\Subscribers
+defaultRedirect: quangtrong/news/subscribers
+
+create:
+    redirect: quangtrong/news/subscribers/update/:id
+    redirectClose: quangtrong/news/subscribers
+
+update:
+    redirect: quangtrong/news/subscribers/update/:id
+    redirectClose: quangtrong/news/subscribers

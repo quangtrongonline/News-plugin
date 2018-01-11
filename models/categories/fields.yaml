@@ -1,0 +1,49 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+
+    name:
+        label: quangtrong.news::lang.form.name
+        required: true
+        span: auto
+
+    slug:
+        label: quangtrong.news::lang.form.slug
+        required: true
+        preset: name
+        span: auto
+
+    content:
+        label: quangtrong.news::lang.form.content
+        type: richeditor
+        size: large
+
+secondaryTabs:
+    fields:
+
+        image:
+            label: quangtrong.news::lang.form.image
+            type: mediafinder
+            mode: image
+
+        status:
+            label: quangtrong.news::lang.form.status
+            required: true
+            type: radio
+            options:
+                1: quangtrong.news::lang.button.active
+                2: quangtrong.news::lang.button.inactive
+            default: 1
+            span: auto
+
+        hidden:
+            label: quangtrong.news::lang.form.hidden
+            required: true
+            type: radio
+            options:
+                1: quangtrong.news::lang.form.yes
+                2: quangtrong.news::lang.form.no
+            default: 2
+            span: auto

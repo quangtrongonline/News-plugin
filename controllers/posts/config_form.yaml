@@ -1,0 +1,17 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+name: quangtrong.news::lang.title.posts
+form: ~/plugins/quangtrong/news/models/posts/fields.yaml
+
+modelClass: Quangtrong\News\Models\Posts
+defaultRedirect: quangtrong/news/posts
+
+create:
+    redirect: quangtrong/news/posts/update/:id
+    redirectClose: quangtrong/news/posts
+
+update:
+    redirect: quangtrong/news/posts/update/:id
+    redirectClose: quangtrong/news/posts

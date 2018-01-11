@@ -1,0 +1,17 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+name: quangtrong.news::lang.title.categories
+form: ~/plugins/quangtrong/news/models/categories/fields.yaml
+
+modelClass: Quangtrong\News\Models\Categories
+defaultRedirect: quangtrong/news/categories
+
+create:
+    redirect: quangtrong/news/categories/update/:id
+    redirectClose: quangtrong/news/categories
+
+update:
+    redirect: quangtrong/news/categories/update/:id
+    redirectClose: quangtrong/news/categories

@@ -1,0 +1,14 @@
+# ===================================
+#  Column Definitions
+# ===================================
+
+columns:
+
+    id: quangtrong.news::lang.form.id
+    name: quangtrong.news::lang.form.name
+    email: quangtrong.news::lang.form.email
+    common: quangtrong.news::lang.form.common
+    statistics: quangtrong.news::lang.stat.mail
+    status: quangtrong.news::lang.form.status
+    created_at: quangtrong.news::lang.form.created
+    updated_at: quangtrong.news::lang.form.updated

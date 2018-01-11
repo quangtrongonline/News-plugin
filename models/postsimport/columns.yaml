@@ -1,0 +1,18 @@
+# ===================================
+#  Column Definitions
+# ===================================
+
+columns:
+
+    id: quangtrong.news::lang.form.id
+    title: quangtrong.news::lang.form.title
+    slug: quangtrong.news::lang.form.slug
+    introductory: quangtrong.news::lang.form.introductory
+    content: quangtrong.news::lang.form.content
+    image: quangtrong.news::lang.form.image
+    statistics: quangtrong.news::lang.stat.view
+    status: quangtrong.news::lang.form.status
+    featured: quangtrong.news::lang.form.featured
+    published_at: quangtrong.news::lang.form.published
+    created_at: quangtrong.news::lang.form.created
+    updated_at: quangtrong.news::lang.form.updated
