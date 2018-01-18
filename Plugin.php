@@ -4,6 +4,7 @@ use System\Classes\PluginBase;
 use Backend;
 use Event;
 use Quangtrong\News\Models\Posts;
+use Quangtrong\News\Models\Categories;
 
 class Plugin extends PluginBase
 {
@@ -185,6 +186,8 @@ class Plugin extends PluginBase
         Event::listen('pages.menuitem.listTypes', function()
         {
             return [
+                'news-category'       => 'quangtrong.news::lang.sitemap.category',
+                'all-news-categories' => 'quangtrong.news::lang.sitemap.categories',
                 'post-list' => 'quangtrong.news::lang.sitemap.post_list',
                 'post-page' => 'quangtrong.news::lang.sitemap.post_page'
             ];
@@ -194,6 +197,8 @@ class Plugin extends PluginBase
         {
             if ($type == 'post-list' || $type == 'post-page') {
                 return Posts::getMenuTypeInfo($type);
+            }elseif($type == 'news-category' || $type == 'all-news-categories') {
+                return Categories::getMenuTypeInfo($type);
             }
         });
 
@@ -201,6 +206,8 @@ class Plugin extends PluginBase
         {
             if ($type == 'post-list' || $type == 'post-page') {
                 return Posts::resolveMenuItem($item, $url, $theme);
+            }elseif($type == 'news-category' || $type == 'all-news-categories') {
+                return Categories::resolveMenuItem($item, $url, $theme);
             }
         });
     }

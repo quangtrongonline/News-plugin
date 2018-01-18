@@ -5,6 +5,7 @@ use BackendAuth;
 use Carbon\Carbon;
 use Cms\Classes\Page as CmsPage;
 use Url;
+use Cms\Classes\Theme;
 
 class Posts extends Model
 {
@@ -224,15 +225,37 @@ class Posts extends Model
         return $query->where('featured', $value);
     }
 
-// Hỗ trợ menu
+//
+    // Menu helpers
+    //
+
+    /**
+     * Handler for the pages.menuitem.getTypeInfo event.
+     * Returns a menu item type information. The type information is returned as array
+     * with the following elements:
+     * - references - a list of the item type reference options. The options are returned in the
+     *   ["key"] => "title" format for options that don't have sub-options, and in the format
+     *   ["key"] => ["title"=>"Option title", "items"=>[...]] for options that have sub-options. Optional,
+     *   required only if the menu item type requires references.
+     * - nesting - Boolean value indicating whether the item type supports nested items. Optional,
+     *   false if omitted.
+     * - dynamicItems - Boolean value indicating whether the item type could generate new menu items.
+     *   Optional, false if omitted.
+     * - cmsPages - a list of CMS pages (objects of the Cms\Classes\Page class), if the item type requires a CMS page reference to
+     *   resolve the item URL.
+     * @param string $type Specifies the menu item type
+     * @return array Returns an array
+     */
     public static function getMenuTypeInfo($type)
     {
-        if ($type == 'post-page') {
-            $references = [];
-            $items = self::orderBy('title')->get()->all();
+        $result = [];
 
-            foreach ($items as $item) {
-                $references[$item->id] = $item->title;
+        if ($type == 'post-page') {
+
+            $references = [];
+            $posts = self::orderBy('title')->get();
+            foreach ($posts as $post) {
+                $references[$post->id] = $post->title;
             }
 
             $result = [
@@ -242,79 +265,126 @@ class Posts extends Model
             ];
         }
 
-        else if ($type == 'post-list') {
+        if ($type == 'post-list') {
             $result = [
                 'dynamicItems' => true
             ];
         }
 
         if ($result) {
-            $pages = CmsPage::sortBy('baseFileName')->all();
-            $result['cmsPages'] = $pages;
+            $theme = Theme::getActiveTheme();
+
+            $pages = CmsPage::listInTheme($theme, true);
+            $cmsPages = [];
+            foreach ($pages as $page) {
+                if (!$page->hasComponent('newsPost')) {
+                    continue;
+                }
+                $cmsPages[] = $page;
+            }
+
+            $result['cmsPages'] = $cmsPages;
         }
 
         return $result;
     }
 
+    /**
+     * Handler for the pages.menuitem.resolveItem event.
+     * Returns information about a menu item. The result is an array
+     * with the following keys:
+     * - url - the menu item URL. Not required for menu item types that return all available records.
+     *   The URL should be returned relative to the website root and include the subdirectory, if any.
+     *   Use the Url::to() helper to generate the URLs.
+     * - isActive - determines whether the menu item is active. Not required for menu item types that
+     *   return all available records.
+     * - items - an array of arrays with the same keys (url, isActive, items) + the title key.
+     *   The items array should be added only if the $item's $nesting property value is TRUE.
+     * @param \RainLab\Pages\Classes\MenuItem $item Specifies the menu item.
+     * @param \Cms\Classes\Theme $theme Specifies the current theme.
+     * @param string $url Specifies the current page URL, normalized, in lower case
+     * The URL is specified relative to the website root, it includes the subdirectory name, if any.
+     * @return mixed Returns an array. Returns null if the item cannot be resolved.
+     */
     public static function resolveMenuItem($item, $url, $theme)
     {
+        $result = null;
+
         if ($item->type == 'post-page') {
-            if (!$item->reference || !$item->cmsPage) {
+            if (!$item->reference || !$item->cmsPage)
                 return;
-            }
 
-            $element = self::find($item->reference);
-            if (!$element) {
+            $category = self::find($item->reference);
+            if (!$category)
                 return;
-            }
 
-            $pageUrl = self::getItemUrl($item->cmsPage, $element, $theme);
-            if (!$pageUrl) {
+            $pageUrl = self::getPostPageUrl($item->cmsPage, $category, $theme);
+            if (!$pageUrl)
                 return;
-            }
 
             $pageUrl = Url::to($pageUrl);
+
             $result = [];
             $result['url'] = $pageUrl;
             $result['isActive'] = $pageUrl == $url;
-            $result['mtime'] = $element->updated_at;
+            $result['mtime'] = $category->updated_at;
         }
-
-        else if ($item->type == 'post-list') {
+        elseif ($item->type == 'post-list') {
             $result = [
                 'items' => []
             ];
 
-            $elements = self::where('status', 1)->where('published_at', '<', date('Y-m-d H:i:s'))->orderBy('title')->get()->all();
-            foreach ($elements as $element) {
-                $listItem = [
-                    'title' => $element->title,
-                    'url'   => Url::to(self::getItemUrl($item->cmsPage, $element, $theme)),
-                    'mtime' => $element->updated_at
+            $posts = self::isPublished()
+            ->orderBy('title')
+            ->get();
+
+            foreach ($posts as $post) {
+                $postItem = [
+                    'title' => $post->title,
+                    'url'   => self::getPostPageUrl($item->cmsPage, $post, $theme),
+                    'mtime' => $post->updated_at,
                 ];
 
-                $listItem['isActive'] = $listItem['url'] == $url;
-                $result['items'][] = $listItem;
+                $postItem['isActive'] = $postItem['url'] == $url;
+
+                $result['items'][] = $postItem;
             }
         }
 
         return $result;
     }
 
-    protected static function getItemUrl($pageCode, $item, $theme)
+    /**
+     * Returns URL of a post page.
+     *
+     * @param $pageCode
+     * @param $category
+     * @param $theme
+     */
+    protected static function getPostPageUrl($pageCode, $category, $theme)
     {
         $page = CmsPage::loadCached($theme, $pageCode);
-        if (!$page) {
+        if (!$page) return;
+
+        $properties = $page->getComponentProperties('newsPost');
+        if (!isset($properties['slug'])) {
             return;
         }
 
-        $properties = $page->getComponentProperties('newsPost');
+        /*
+         * Extract the routing parameter name from the category filter
+         * eg: {{ :someRouteParam }}
+         */
         if (!preg_match('/^\{\{([^\}]+)\}\}$/', $properties['slug'], $matches)) {
             return;
         }
 
         $paramName = substr(trim($matches[1]), 1);
+        $params = [
+            $paramName => $category->slug
+        ];
+        $url = CmsPage::url($page->getBaseFileName(), $params);
 
-        return CmsPage::url($page->getBaseFileName(), [$paramName => $item->slug]);
+        return $url;
     }
 }

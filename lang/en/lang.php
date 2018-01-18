@@ -205,7 +205,9 @@ return [
     ],
     'sitemap' => [
         'post_list' => 'Post list',
-        'post_page' => 'Post page'
+        'post_page' => 'Post page',
+        'category' => 'News category',
+        'categories' => 'News categories',
     ],
     'messages' => [
         'unsubscribed' => 'We successfully unsubscribed you from our newsletter.',
