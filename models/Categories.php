@@ -152,10 +152,11 @@ class Categories extends Model
             }
 
             $category = self::find($item->reference);
+
             if (!$category) {
                 return;
             }
-
+            
             $pageUrl = self::getCategoryPageUrl($item->cmsPage, $category, $theme);
             if (!$pageUrl) {
                 return;
@@ -167,9 +168,35 @@ class Categories extends Model
             $result['url'] = $pageUrl;
             $result['isActive'] = $pageUrl == $url;
             $result['mtime'] = $category->updated_at;
+            //Begin Nếu có danh mục con thì thêm danh mục con 
+            if($category->getChildren()->first()){
+                $categories = $category->getChildren()->all(); //Lấy tất cả danh mục con
+                $iterator = function($categories) use (&$iterator, &$item, &$theme, $url) {
+                    $branch = [];
+                    foreach ($categories as $category) {
+                        $branchItem = [];
+                        $branchItem['url'] = self::getCategoryPageUrl($item->cmsPage, $category, $theme);
+                        $branchItem['isActive'] = $branchItem['url'] == $url;
+                        $branchItem['title'] = $category->name;
+                        $branchItem['mtime'] = $category->updated_at;
 
+                        if ($category->children) {
+                            $branchItem['items'] = $iterator($category->children);
+                        }
+
+                        $branch[] = $branchItem;
+                    }
+                    return $branch;
+                };
+
+                $result['items'] = $iterator($categories);
+            }
+            // End
+            // Begin Nếu Alowed Nested Items thì sẽ thêm tất cả các danh mục và danh mục con vào menu
+            // Bỏ qua danh mục con của danh mục hiện tại
             if ($item->nesting) {
                 $categories = $category->getNested();
+                
                 $iterator = function($categories) use (&$iterator, &$item, &$theme, $url) {
                     $branch = [];
 
@@ -193,6 +220,7 @@ class Categories extends Model
 
                 $result['items'] = $iterator($categories);
             }
+            // End
         }
         elseif ($item->type == 'all-news-categories') {
             $result = [
